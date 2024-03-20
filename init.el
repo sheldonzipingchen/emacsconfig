@@ -86,9 +86,32 @@
   :config
   (global-flycheck-mode))
 
-(add-hook 'prog-mode-hook 'column-number-mode)          ; 在 ModeLine 上显示列号
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)   ; 显示行号
 (add-hook 'prog-mode-hook 'electric-pair-mode)          ; 括号配对
+
+(use-package helm
+  :ensure t
+  :bind (("M-x" . helm-M-x)
+	 ("C-x C-f" . helm-find-files))
+  :config
+  ;; 全局启用 Helm minor mode
+  (helm-mode 1))
+
+(use-package projectile
+  :ensure t
+  :config
+  ;; 缓存到 ~/.emacs.d/.cache/ 文件夹下
+  (setq projectile-cache-file (expand-file-name ".cache/projectile.cache" user-emacs-directory))
+  ;; 全局 enable 这个 minor mode
+  (projectile-mode 1)
+  ;; 定义和它有关功能的 leader key
+  (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map))
+
+(use-package helm-projectile
+  :ensure t
+  :if (functionp 'helm)
+  :config
+  (helm-projectile-on))
 
 (use-package treesit
   :when (and (fboundp 'treesit-available-p)
