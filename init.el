@@ -143,6 +143,10 @@
   :hook (prog-mode . eglot-ensure)
   :bind ("C-c e f" . eglot-format))
 
+(add-to-list 'load-path "~/.emacs.d/beancount-mode")
+(require 'beancount)
+(add-to-list 'auto-mode-alist '("\\.beancount\\'" . beancount-mode))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
