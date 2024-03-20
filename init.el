@@ -51,6 +51,14 @@
 (use-package which-key
   :ensure t)
 
+(use-package gruvbox-theme
+  :ensure t
+  :config
+  (load-theme 'gruvbox-dark-soft t))
+
+(use-package magit
+  :ensure t)
+
 (use-package company
   :ensure t
   :defer t
