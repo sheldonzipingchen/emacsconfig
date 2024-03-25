@@ -2,36 +2,42 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cabins--os-win (memq system-type '(ms-dos windows-nt cygwin)))
-(defvar cabins--os-mac (eq system-type 'darwin))
+(setq user-full-name "Sheldon Chen"
+      user-mail-address "sheldon.ziping.chen@gmail.com")
 
-(defvar cabins--fonts-default '("Sometype Mono" "Cascadia Code PL" "Menlo" "Consolas"))
-(defvar cabins--fonts-unicode '("Segoe UI Symbol" "Symbola" "Symbol"))
-(defvar cabins--fonts-emoji '("Noto Color Emoji" "Apple Color Emoji"))
-(defvar cabins--fonts-cjk '("KaiTi" "STKaiTi" "WenQuanYi Micro Hei"))
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
 
-(require 'subr-x) ;; cl-loop来自这里
+(menu-bar-mode -1)
+(toggle-scroll-bar -1)
+(tool-bar-mode -1)
+(blink-cursor-mode -1)
 
-(defun cabins--set-font-common (character font-list &optional scale-factor)
-  "Set fonts for multi CHARACTER from FONT-LIST and modify style with SCALE-FACTOR."
+(global-hl-line-mode +1)
+(line-number-mode +1)
+(global-display-line-numbers-mode +1)
+(column-number-mode t)
+(size-indication-mode t)
 
-  (cl-loop for font in font-list
-       when (find-font (font-spec :name font))
-       return (if (not character)
-              (set-face-attribute 'default nil :family font)
-            (when scale-factor (setq face-font-rescale-alist `((,font . ,scale-factor))))
-            (set-fontset-font t character (font-spec :family font) nil 'prepend))))
+(setq inhibit-startup-screen t)
 
-(defun cabins--font-setup (&optional default-fonts unicode-fonts emoji-fonts cjk-fonts)
-  "Font setup, with optional DEFAULT-FONTS, UNICODE-FONTS, EMOJI-FONTS, CJK-FONTS."
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+		   (abbreviate-file-name (buffer-file-name)
+					 "%b")))))
 
-  (interactive)
-  (when (display-graphic-p)
-    (cabins--set-font-common nil (if default-fonts default-fonts cabins--fonts-default))
-    (cabins--set-font-common 'unicode (if unicode-fonts unicode-fonts cabins--fonts-unicode))
-    (cabins--set-font-common 'emoji (if emoji-fonts emoji-fonts cabins--fonts-emoji))
-    (dolist (charset '(kana han bopomofo cjk-misc))
-      (cabins--set-font-common charset (if cjk-fonts cjk-fonts cabins--fonts-cjk) 1.2))))
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position 1)
+
+(setq-default tab-width 4
+	      indent-tabs-mode nil)
+
+; Set Font
+(set-frame-font "FiraCode Nerd Font Propo 14" nil t)
+
 
 (setq backup-directory-alist (quote (("." . "~/.backups"))))
 
