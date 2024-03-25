@@ -20,6 +20,7 @@
 (global-display-line-numbers-mode +1)
 (column-number-mode t)
 (size-indication-mode t)
+(global-visual-line-mode 1)
 
 (setq inhibit-startup-screen t)
 
@@ -182,7 +183,8 @@
 
 
 (use-package org
-  :ensure t)
+  :ensure t
+  :config (setq-default truncate-lines nil))
 
 (add-to-list 'load-path "~/.emacs.d/beancount-mode")
 (require 'beancount)
