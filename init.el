@@ -176,6 +176,10 @@
   :hook (prog-mode . eglot-ensure)
   :bind ("C-c e f" . eglot-format))
 
+(defun efs/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
 
 (use-package org
   :ensure t
@@ -190,7 +194,7 @@
 
   (setq org-agenda-files
 	    '("~/projects/notes/Tasks.org"
-	      "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
+	      "~/projects/notes/Habits.org"
 	      "~/projects/notes/Birthdays.org"))
 
   (require 'org-habit)
@@ -297,8 +301,7 @@
            "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 
   (define-key global-map (kbd "C-c j")
-              (lambda () (interactive) (org-capture nil "jj")))
-  (efs/org-font-setup))
+              (lambda () (interactive) (org-capture nil "jj"))))
 
 (use-package org-bullets
   :ensure t
