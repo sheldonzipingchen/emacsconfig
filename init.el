@@ -24,11 +24,6 @@
 
 (setq inhibit-startup-screen t)
 
-(setq frame-title-format
-      '((:eval (if (buffer-file-name)
-		   (abbreviate-file-name (buffer-file-name)
-					 "%b")))))
-
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)

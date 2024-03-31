@@ -1,2 +1,6 @@
 elpa/
 .cache/
+auto-save-list/
+projectile*
+transient/
+tree-sitter/
