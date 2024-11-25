@@ -54,10 +54,7 @@
 (use-package gruvbox-theme
   :ensure t
   :config
-  (load-theme 'gruvbox-dark-soft t))
-
-(use-package magit
-  :ensure t)
+  (load-theme 'gruvbox-light-soft t))
 
 (use-package format-all
   :ensure t
