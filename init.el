@@ -10,176 +10,108 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-(menu-bar-mode -1)
-(toggle-scroll-bar -1)
-(tool-bar-mode -1)
-(blink-cursor-mode -1)
+;; 定义快捷键快速打开 init.el
+(defun open-init-file ()
+  "打开 Emacs 配置文件"
+  (interactive)
+  (find-file "~/.emacs.d/init.el"))
 
-(global-hl-line-mode +1)
-(line-number-mode +1)
-(global-display-line-numbers-mode +1)
-(column-number-mode t)
-(size-indication-mode t)
-(global-visual-line-mode 1)
-
-(setq inhibit-startup-screen t)
-
-(setq scroll-margin 0
-      scroll-conservatively 100000
-      scroll-preserve-screen-position 1)
-
-(setq-default tab-width 4
-	          indent-tabs-mode nil)
-
-                                        ; Set Font
-(set-frame-font "FiraCode Nerd Font Propo 14" nil t)
+(global-set-key (kbd "C-c e") 'open-init-file)
 
 
-(setq backup-directory-alist (quote (("." . "~/.backups"))))
+;; 启用垃圾回收优化(减少卡顿)
+(setq gc-cons-threshold (* 50 1024 1024)) ; 50MB
 
-;; Setup use-package just in case everything isn't already installed
+
+;; 启用原生编译(Emacs 28+)
+(when (and (fboundp 'native-comp-available-p)
+	   (native-comp-available-p))
+  (setq package-native-compile t))
+
+
+;; 初始化包管理器
+(require 'package)
+(setq package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
+(package-initialize)
+
+;; 安装 use-package（如果未安装）
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; Enable use-package
+;; 启用 use-package
 (eval-when-compile
   (require 'use-package))
-(setq use-package-always-ensure t)
 
 
-(use-package package
-  :config
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-  (unless (bound-and-true-p package--initialized)
-    (package-initialize)))
-
-
-(use-package exec-path-from-shell
-  :ensure t
-  :init (exec-path-from-shell-initialize))
-
-
-(use-package which-key
-  :ensure t)
-
-
+;; 设置字体和主题
+(set-frame-font "FiraCode Nerd Font Propo 14" nil t)
 (use-package gruvbox-theme
   :ensure t
   :config
   (load-theme 'gruvbox-light-soft t))
 
 
-(use-package format-all
-  :ensure t
-  :defer t
-  ;; 开启保存时自动格式化
-  :hook (prog-mode . format-all-mode)
-  ;; 绑定一个手动格式化的快捷键
-  :bind ("C-c f" . #'format-all-region-or-buffer))
+;; 显示行号、高亮当前行
+(global-display-line-numbers-mode t)
+(global-hl-line-mode t)
 
 
-(use-package pyvenv
-  :ensure t
-  :config
-  (pyvenv-mode t)
+;; 自动补全括号
+(electric-pair-mode t)
 
-  ;; Set correct Python interpreter
-  (setq pyvenv-post-activate-hooks
-        (list (lambda ()
-                (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))))
-  (setq pyvenv-post-deactivate-hooks
-        (list (lambda ()
-                (setq python-shell-interpreter "python3")))))
+;; 设置备份文件目录(避免污染当前目录)
+(setq backup-directory-alist (quote (("." . "~/.backups"))))
 
 
-(use-package magit
-  :ensure t)
-
-
-(use-package org
-  :pin gnu)
-
-
-;; Must do this so the agenda knows where to look for my files
-(setq org-agenda-files '("~/projects/notes"))
-
-;; When a TODO is set to a done state, record a timestamp
-(setq org-log-done 'time)
-
-;; Follow the links
-(setq org-return-follows-link t)
-
-;; Associate all org files with org mode
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-
-;; Make the indentation look nicer
-(add-hook 'org-mode-hook 'org-indent-mode)
-
-;; Remap the change priority keys to use the UP or DOWN key
-(define-key org-mode-map (kbd "C-c <up>") 'org-priority-up)
-(define-key org-mode-map (kbd "C-c <down>") 'org-priority-down)
-
-;; Shortcuts for storing links, viewing the agenda, and starting a capture
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-ca" 'org-agenda)
-(define-key global-map "\C-cc" 'org-capture)
-
-;; When you want to change the level of an org item, use SMR
-(define-key org-mode-map (kbd "C-c C-g C-r") 'org-shiftmetaright)
-
-;; Hide the markers so you just see bold text as BOLD-TEXT and not *BOLD-TEXT*
-(setq org-hide-emphasis-markers t)
-
-;; Wrap the lines in org mode so that things are easier to read
-(add-hook 'org-mode-hook 'visual-line-mode)
-
-(use-package org-super-agenda
-  :ensure t)
-
-(use-package comment-tags
-  :ensure t)
-
-(setq org-capture-templates
-      '(
-        ("j" "Work Log Entry"
-         entry (file+datetree "~/projects/notes/work-log.org")
-         "* %?"
-         :empty-lines 0)
-
-        ("n" "Note"
-         entry (file+headline "~/projects/notes/notes.org" "Random Notes")
-         "** %?"
-         :empty-lines 0)
-
-        ("g" "General To-Do"
-         entry (file+headline "~/projects/notes/todos.org" "General Tasks")
-         "* TODO [#B] %?\n:Created: %T\n "
-         :empty-lines 0)
-        ))
-
-;; TODO states
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i@/!)" "VERIFYING(v!)" "BLOCKED(b@)" "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(w@/!)" )
-        ))
-
-;; TODO colors
-(setq org-todo-keyword-faces
-      '(
-        ("TODO" . (:foreground "GoldenRod" :weight bold))
-        ("PLANNING" . (:foreground "DeepPink" :weight bold))
-        ("IN-PROGRESS" . (:foreground "Cyan" :weight bold))
-        ("VERIFYING" . (:foreground "DarkOrange" :weight bold))
-        ("BLOCKED" . (:foreground "Red" :weight bold))
-        ("DONE" . (:foreground "LimeGreen" :weight bold))
-        ("OBE" . (:foreground "LimeGreen" :weight bold))
-        ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
-        ))
-
-
+;; 安装 beancount-mode
 (add-to-list 'load-path "~/.emacs.d/beancount-mode")
 (require 'beancount)
 (add-to-list 'auto-mode-alist '("\\.beancount\\'" . beancount-mode))
+
+
+;; 快速按键提示(which-key)
+(use-package which-key
+  :ensure t
+  :init (which-key-mode))
+
+
+;; 模糊搜索(ivy/counsel/swiper)
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) "))
+
+(use-package counsel
+  :ensure t
+  :bind (("M-x" . counsel-M-x) ; 替换默认 M-x
+	 ("C-s" . swiper)))
+
+
+;; 自动补全(company)
+(use-package company
+  :ensure t
+  :init (global-company-mode)
+  :config
+  (setq company-idle-delay 0.2
+	company-minimum-prefix-length 1))
+
+
+;; 图标支持(nerd-icons)
+(use-package nerd-icons
+  :ensure t
+  :if (display-graphic-p))
+
+
+;; 现代模式行(doom-modeline)
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode)
+  :config
+  (setq doom-modeline-height 25))
 
 
 (custom-set-variables
@@ -187,7 +119,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(gnu-elpa-keyring-update company)))
+ '(package-selected-packages '(gruvbox)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
