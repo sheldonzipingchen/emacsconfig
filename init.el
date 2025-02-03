@@ -126,12 +126,37 @@
   :bind ("C-x g" . magit-status))
 
 
+;; 格式化插件(format-all)
+(use-package format-all
+  :ensure t
+  :defer t
+  ;; 开启保存时自动格式化
+  :hook (prog-mode . format-all-mode)
+  ;; 绑定手动格式化的快捷键
+  :bind ("C-c f" . #'format-all-region-or-buffer))
+
+
+;; pyvenv
+(use-package pyvenv
+  :ensure t
+  :config
+  (pyvenv-mode t)
+
+  ;; 设置Python解释器
+  (setq pyvenv-post-activate-hooks
+	(list (lambda ()
+		(setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))))
+  (setq pyvenv-post-deactivate-hooks
+	(list (lambda ()
+		(setq python-shell-interpreter "python3")))))
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(magit flycheck gruvbox)))
+ '(package-selected-packages '(pyvenv format-all magit flycheck gruvbox)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
