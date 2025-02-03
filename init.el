@@ -77,6 +77,14 @@
   :init (which-key-mode))
 
 
+;; exec-path-from-shell
+(use-package exec-path-from-shell
+  :ensure t)
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+
 ;; 模糊搜索(ivy/counsel/swiper)
 (use-package ivy
   :ensure t
@@ -92,13 +100,43 @@
 	 ("C-s" . swiper)))
 
 
+;; 通用 LSP 配置
+(use-package lsp-mode
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :init
+  ;; 在 prog-mode 中延迟启动 LSP(提升性能)
+  (setq lsp-auto-guess-root t) ; 自动检测项目根目录
+  (setq lsp-enable-snippet t)  ; 启用代码片段支持
+  (setq lsp-enable-indentation nil) ; 禁用 LSP 缩进
+  :hook
+  (prog-mode . lsp-deferred)) ; 延迟加载 LSP
+
 ;; 自动补全(company)
 (use-package company
   :ensure t
   :init (global-company-mode)
   :config
   (setq company-idle-delay 0.2
-	company-minimum-prefix-length 1))
+	company-minimum-prefix-length 1
+	lsp-completion-provider :capf))
+
+
+;; LSP 界面增强
+(use-package lsp-ui
+  :ensure t
+  :after lsp-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-doc-enable t) ; 启用悬浮文档
+  (setq lsp-ui-sideline-enable t) ; 启用右侧诊断信息
+  (setq lsp-ui-peek-always-show t)) ; 启用代码跳转预览
+
+
+;; 语法检查(flycheck)
+(use-package flycheck
+  :ensure t
+  :hook (prog-mode . flycheck-mode))
 
 
 ;; 图标支持(nerd-icons)
@@ -115,11 +153,6 @@
   (setq doom-modeline-height 25))
 
 
-;; 语法检查(flycheck)
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
-
 
 ;; 版本控制(magit)
 (use-package magit
@@ -135,6 +168,12 @@
   :hook (prog-mode . format-all-mode)
   ;; 绑定手动格式化的快捷键
   :bind ("C-c f" . #'format-all-region-or-buffer))
+
+
+;; 启用代码括号匹配高亮
+(use-package paren
+  :config
+  (show-paren-mode 1))
 
 
 ;; pyvenv
@@ -162,12 +201,33 @@
   (setq org-log-done 'time) ; 任务完成时记录时间
   )
 
+
+;; Go 专用配置
+(use-package go-mode
+  :ensure t
+  :mode "\\.go\\'"
+  :hook
+  (before-save . gofmt-before-save)
+  (go-mode . (lambda ()
+	       (setq tab-width 4) ; 设置缩进为 4 空格
+	       (setq indent-tabs-mode t))) ; Go 使用 Tab 缩进
+  :config
+  (setq gofmt-command "goimports")
+  ;; 绑定常用快捷键
+  (define-key go-mode-map (kbd "C-c C-g") 'go-goto-imports)
+  (define-key go-mode-map (kbd "C-c C-f") 'gofmt) ; 格式化代码
+  
+  ;; 设置 Go 格式化工具
+  (add-hook 'before-save-hook #'lsp-format-buffer t t))
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(pyvenv format-all magit flycheck gruvbox)))
+ '(package-selected-packages
+   '(exec-path-from-shell go-mode lsp-ui company-lsp lsp-mode pyvenv format-all magit flycheck gruvbox)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
