@@ -87,6 +87,7 @@
 
 (use-package counsel
   :ensure t
+  :after ivy
   :bind (("M-x" . counsel-M-x) ; 替换默认 M-x
 	 ("C-s" . swiper)))
 
@@ -150,6 +151,16 @@
 	(list (lambda ()
 		(setq python-shell-interpreter "python3")))))
 
+
+;; Org Mode 基础配置
+(use-package org
+  :ensure nil
+  :hook (org-mode . (lambda ()
+		      (org-indent-mode) ; 启用缩进对齐
+		      (visual-line-mode))) ; 自动折行
+  :config
+  (setq org-log-done 'time) ; 任务完成时记录时间
+  )
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
