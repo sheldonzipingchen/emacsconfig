@@ -4,3 +4,5 @@ auto-save-list/
 projectile*
 transient/
 tree-sitter/
+recentf
+.lsp-session-v1
