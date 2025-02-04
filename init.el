@@ -176,6 +176,71 @@
   (show-paren-mode 1))
 
 
+;; Org Mode 基础配置
+(use-package org
+  :ensure nil
+  :hook (org-mode . (lambda ()
+		      (org-indent-mode) ; 启用缩进对齐
+		      (visual-line-mode))) ; 自动折行
+  :config
+  (setq org-directory "~/projects/notes/") ; 笔记目录
+  (setq org-agenda-files '("~/projects/notes/Tasks.org")) ; 指定议程文件
+  (setq org-log-done 'time) ; 任务完成时记录时间
+
+  ;; 设置任务状态流程
+  (setq org-todo-keywords
+	'((sequence "TODO(t)" "DOING(d)" "BLOCKED(b)" "|" "DONE(D)" "CANCELLED(c)")))
+
+  ;; 高亮代码块语法
+  (setq org-src-fontify-natively t))
+
+;; 快速打开 org 文件的快捷键
+(global-set-key (kbd "C-c o") (lambda () (interactive) (find-file (concat org-directory "/Tasks.org"))))
+
+;; 设置任务计划时间和截止时间
+(setq org-deadline-warning-days 3) ; 截止日期前3天提醒
+
+;; 任务时间追踪
+;; 快速插入时间戳的快捷键
+(define-key org-mode-map (kbd "C-c .") 'org-time-stamp) ; 插入活动时间戳（计划时间）
+(define-key org-mode-map (kbd "C-c !") 'org-time-stamp-inactive) ; 插入非活动时间戳（日志记录）
+
+;; 议程视图(agenda)
+;; 绑定议程视图快捷键
+(global-set-key (kbd "C-c a") 'org-agenda)
+
+;; 议程视图配置
+(setq org-agenda-span 7) ; 默认显示7天任务
+(setq org-agenda-start-with-log-mode t) ; 显示任务日志
+(setq org-agenda-skip-deadline-if-done t) ; 跳过已完成任务的截止日期
+
+;; 代码块执行(Babel)
+;; 启用代码执行
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t) ; 执行 Python 代码
+   (shell . t) ; 执行 Shell 命令
+   (emacs-lisp . t) ; 执行 Elisp 代码
+   (plantuml . t))) ; 绘图（需安装 plantuml.jar）
+
+;; 设置 PlantUML 路径
+(setq org-plantuml-jar-path "~/.emacs.d/lib/plantuml.jar")
+
+;; 快速公式计算(按 `C-c +` 或 `C-c -` 自动计算)
+(setq org-table-use-standard-references t) ; 使用 Excel 风格的公式(如B3)
+
+;; 设置标题字体大小和颜色
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.4 :foreground "#E06C75"))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.3 :foreground "#98C379")))))
+
+;; 优化列表缩进
+(setq org-list-indent-offset 2) ; 子列表缩进2字符
+
+;; 在 Org Mode 中使用图标
+(setq org-ellipsis " ") ; 替换默认的折叠符号 "..."
+
+
 ;; pyvenv
 (use-package pyvenv
   :ensure t
@@ -189,17 +254,6 @@
   (setq pyvenv-post-deactivate-hooks
 	(list (lambda ()
 		(setq python-shell-interpreter "python3")))))
-
-
-;; Org Mode 基础配置
-(use-package org
-  :ensure nil
-  :hook (org-mode . (lambda ()
-		      (org-indent-mode) ; 启用缩进对齐
-		      (visual-line-mode))) ; 自动折行
-  :config
-  (setq org-log-done 'time) ; 任务完成时记录时间
-  )
 
 
 ;; Go 专用配置
@@ -227,7 +281,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(exec-path-from-shell go-mode lsp-ui company-lsp lsp-mode pyvenv format-all magit flycheck gruvbox)))
+   '(go-mode lsp-ui lsp-mode exec-path-from-shell pyvenv format-all magit flycheck gruvbox)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
