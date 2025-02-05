@@ -85,6 +85,27 @@
   (exec-path-from-shell-initialize))
 
 
+;; 安装 projectile
+(use-package projectile
+  :ensure t
+  :init
+  (setq projectile-switch-project-action #'projectile-dired) ; 切换项目后打开目录
+  :config
+  (projectile-mode 1)
+  ;; 忽略文件配置
+  (setq projectile-globally-ignored-files '(".DS_Store" "*.pyc" "*.class"))
+  (setq projectile-globally-ignored-directories '("node_moudles" "target" ".git" "__pycache__"))
+  (setq projectile-enable-caching t) ; 启用缓存加速切换
+  (projectile-save-known-projects) ; 保存已知项目列表
+  ;; 集成 Ivy
+  (use-package counsel-projectile
+    :ensure t
+    :config (counsel-projectile-mode 1)))
+
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+(global-set-key (kbd "C-c p s") 'counsel-projectile-rg) ; 使用 ripgrep 搜索
+
+
 ;; 模糊搜索(ivy/counsel/swiper)
 (use-package ivy
   :ensure t
@@ -231,6 +252,10 @@
 
 ;; 设置标题字体大小和颜色
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(org-level-1 ((t (:inherit outline-1 :height 1.4 :foreground "#E06C75"))))
  '(org-level-2 ((t (:inherit outline-2 :height 1.3 :foreground "#98C379")))))
 
@@ -282,9 +307,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    '(go-mode lsp-ui lsp-mode exec-path-from-shell pyvenv format-all magit flycheck gruvbox)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
