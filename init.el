@@ -24,9 +24,9 @@
 
 
 ;; 启用原生编译(Emacs 28+)
-(when (and (fboundp 'native-comp-available-p)
-	   (native-comp-available-p))
-  (setq package-native-compile t))
+;; (when (and (fboundp 'native-comp-available-p)
+;; (native-comp-available-
+;; (setq package-native-compile t))
 
 
 ;; 初始化包管理器
@@ -197,6 +197,27 @@
   (show-paren-mode 1))
 
 
+;; YaSnippet 配置
+(use-package yasnippet
+  :ensure t
+  :commands (yas-minor-mode yas-expand)
+  :hook
+  (prog-mode . yas-minor-mode)  ; 在编程模式下启用 YASnippet
+  :config
+  (yas-global-mode 1)           ; 全局启用 YASnippet
+  (setq yas-snippet-dirs        ; 指定自定义片段目录
+        '("~/.emacs.d/snippets" ; 用户自定义片段
+          yasnippet-snippets-dir)) ; 预装片段（如安装 yasnippet-snippets）
+  (setq yas-prompt-functions '(yas-completing-prompt)) ; 使用补全式提示
+  (setq yas-verbosity 1))       ; 减少日志输出（0 静默，1 基础，2 详细）
+
+
+;; 安装官方预置片段库（可选，包含多种语言模板）
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet)
+
+
 ;; Org Mode 基础配置
 (use-package org
   :ensure nil
@@ -300,11 +321,29 @@
   (add-hook 'before-save-hook #'lsp-format-buffer t t))
 
 
+;; 测试支持
+(use-package gotest
+  :ensure t
+  :after go-mode
+  :config
+  (define-key go-mode-map (kbd "C-c C-t") 'gotest-run))
+
+(use-package go-errcheck
+  :ensure t
+  :after go-mode
+  :bind (:map go-mode-map ("C-c C-e" . go-errcheck)))
+
+(use-package go-guru
+  :ensure t
+  :after go-mode
+  :bind (:map go-mode-map ("C-c C-j" . go-guru-definition)))
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(go-mode lsp-ui lsp-mode exec-path-from-shell pyvenv format-all magit flycheck gruvbox)))
+   '(yasnippet-snippets yasnippet go-goru go-errcheck gotest go-mode lsp-ui lsp-mode exec-path-from-shell pyvenv format-all magit flycheck gruvbox)))
 
