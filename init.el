@@ -67,6 +67,11 @@
   :ensure t)
 
 
+;; magit
+(use-package magit
+  :ensure t)
+
+
 ;; Org
 (setq org-directory (file-truename "~/OneDrive/orgfiles/"))
 
@@ -81,7 +86,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(exec-path-from-shell which-key gruvbox-theme)))
+ '(package-selected-packages '(magit exec-path-from-shell which-key gruvbox-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
