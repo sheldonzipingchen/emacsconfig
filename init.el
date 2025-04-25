@@ -7,6 +7,10 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
+;; 自动断行
+(global-visual-line-mode 1)
+(setq-default truncate-lines nil)
+
 ;; 显示行号、高亮当前行
 (global-display-line-numbers-mode t)
 (global-hl-line-mode t)
@@ -45,7 +49,7 @@
 
 
 ;; 设置字体和主题
-(set-frame-font "FiraCode Nerd Font Propo 14" nil t)
+(set-frame-font "FiraCode Nerd Font Propo 16" nil t)
 (use-package gruvbox-theme
   :ensure t
   :config
@@ -61,6 +65,17 @@
 ;; exec-path-from-shell
 (use-package exec-path-from-shell
   :ensure t)
+
+
+;; Org
+(setq org-directory (file-truename "~/OneDrive/orgfiles/"))
+
+(use-package org
+  :init
+  (require 'org-indent)
+  :ensure t)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
