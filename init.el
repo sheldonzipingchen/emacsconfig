@@ -10,6 +10,8 @@
 (setq mac-option-modifier 'meta
       mac-command-modifier 'super)
 
+(fset 'yes-or-no-p 'y-or-n-p)
+
 ;; 自动断行
 (global-visual-line-mode 1)
 (setq-default truncate-lines nil)
@@ -51,7 +53,7 @@
   (package-install 'use-package))
 
 
-;; 设置字体和主题
+[[id:F365B5D5-B29F-4CAA-BB35-EA3BAA9C39AF][关于投资组合的一些想法]];; 设置字体和主题
 (set-frame-font "FiraCode Nerd Font Propo 16" nil t)
 (use-package gruvbox-theme
   :ensure t
