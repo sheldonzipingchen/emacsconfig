@@ -6,3 +6,6 @@ transient/
 tree-sitter/
 recentf
 .lsp-session-v1
+org-roam.db
+.org-id-locations
+bookmarks

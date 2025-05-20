@@ -53,7 +53,7 @@
   (package-install 'use-package))
 
 
-[[id:F365B5D5-B29F-4CAA-BB35-EA3BAA9C39AF][关于投资组合的一些想法]];; 设置字体和主题
+;; 设置字体和主题
 (set-frame-font "FiraCode Nerd Font Propo 16" nil t)
 (use-package gruvbox-theme
   :ensure t
@@ -78,27 +78,68 @@
 
 
 ;; Org
-(setq org-directory (file-truename "~/OneDrive/orgfiles/"))
-
-
-;; Org Roam
-(use-package org-roam
+(use-package org
   :ensure t
-  :custom
-  (org-roam-directory (file-truename "~/OneDrive/orgfiles/orgroam/"))
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n g" . org-roam-graph)
-         ("C-c n i" . org-roam-node-insert)
-         ("C-c n c" . org-roam-capture)
-         ;; Dailies
-         ("C-c n j" . org-roam-dailies-capture-today))
+  :defer t
+  :init
+  ;; 基础目录与文件设置
+  (setq org-directory "~/projects/notes/")
+  (setq org-agenda-files (list (concat org-directory "tasks.org")))
+  (setq org-default-notes-file (concat org-directory "notes.org"))
+
+  ;; 预加载常用贡献包
+  (require 'org-contrib nil t)
+
+  :bind (("C-c c" . org-capture)
+	 ("C-c a" . org-agenda)
+	 ("C-c t" . org-todo-list))
+  
   :config
-  ;; If you're using a vertical completion framework, you might want a more informative completion interface
-  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-db-autosync-mode)
-  ;; If using org-roam-protocol
-  (require 'org-roam-protocol))
+  ;; ------------------------
+  ;; 核心任务管理
+  ;; ------------------------
+  (setq org-todo-keywords
+	'((sequence "TODO(t)" "DOING(i)" "BLOCKED(b)" "|" "DONE(d)" "CANCEL(c)")))
+  (setq org-log-done 'time)  ; 记录任务完成时间
+
+  ;; ------------------------
+  ;; 快速捕获模板
+  ;; ------------------------
+  (setq org-capture-templates
+	'(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %?\n %i\n %a")
+	  ("n" "Note" entry (file+headline org-default-notes-file "Notes") "* %?\n %i\n %a")))
+
+  ;; -----------------------
+  ;; 界面与编辑优化
+  ;; -----------------------
+  (setq org-src-fontify-natively t)    ; 代码块语法高亮
+  (setq org-src-tab-acts-natively t)  ; 代码块原生缩进
+  (setq org-startup-indented t)       ; 标题自动缩进
+  (setq org-hide-emphasis-markers t)  ; 隐藏 *粗体*/_斜体_ 符号
+
+  ;; 设置标题字体大小
+  (set-face-attribute 'org-level-1 nil :height 1.2)
+  (set-face-attribute 'org-level-2 nil :height 1.1)
+
+  ;; --------------------------
+  ;; 高级功能扩展
+  ;; --------------------------
+  ;; 启用 org-roam（知识图谱笔记）
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-directory (concat org-directory "roam/"))
+    :config
+    (org-roam-db-autosync-mode))
+
+  ;; 时间追踪与报表
+  (setq org-clock-report-include-clocking-task t)
+  (setq org-log-repeat 'time)
+
+  ;; 表格优化
+  (setq org-table-export-default-format "orgtbl-to-csv")
+  (add-hook 'org-mode-hook 'org-table-autoalign-mode))
+
 
 
 (custom-set-variables
