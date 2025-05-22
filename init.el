@@ -86,6 +86,7 @@
   (setq org-directory "~/projects/notes/")
   (setq org-agenda-files (list (concat org-directory "tasks.org")))
   (setq org-default-notes-file (concat org-directory "notes.org"))
+  (setq org-diary-note-file (concat org-directory "diary.org"))
 
   ;; 预加载常用贡献包
   (require 'org-contrib nil t)
@@ -107,7 +108,10 @@
   ;; ------------------------
   (setq org-capture-templates
 	'(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %?\n %i\n %a")
-	  ("n" "Note" entry (file+headline org-default-notes-file "Notes") "* %?\n %i\n %a")))
+	  ("n" "Note" entry (file+headline org-default-notes-file "Notes") "* %?\n %i\n %a")
+	  ("d" "Diary" entry (file+datetree "~/projects/notes/diary.org")
+	   "* %?\n%U\n" :clock-in t :clock-resume t)
+	  ))
 
   ;; -----------------------
   ;; 界面与编辑优化
