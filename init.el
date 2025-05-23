@@ -60,6 +60,12 @@
   :config
   (load-theme 'gruvbox-light-soft t))
 
+(use-package cnfonts
+  :ensure t
+  :config
+  (cnfonts-mode 1)
+  (setq cnfonts-use-face-font-rescale t))
+
 
 ;; 快速按键提示(which-key)
 (use-package which-key
@@ -140,6 +146,7 @@
   (setq org-clock-report-include-clocking-task t)
   (setq org-log-repeat 'time))
 
+
 (add-to-list 'load-path "~/.emacs.d/beancount-mode/")
 (require 'beancount)
 (add-to-list 'auto-mode-alist '("\\.beancount\\'" . beancount-mode))
@@ -152,9 +159,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    '(org-table-auto-align-mode org-table-mode org-table org-roam magit exec-path-from-shell which-key gruvbox-theme)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
