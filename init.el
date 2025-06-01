@@ -198,6 +198,25 @@
 		lsp-ui-doc-enable t
 		lsp-lens-enable t))
 
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet
+  :config
+  (yasnippet-snippets-initialize))
+
+(setq user-snippet-dir "~/.emacs.d/snippets")
+
+(unless (file-directory-p user-snippet-dir)
+  (make-directory user-snippet-dir t))
+
+(add-to-list 'yas-snippet-dirs user-snippet-dir)
+(yas-reload-all)
+
 (add-to-list 'load-path "~/.emacs.d/beancount-mode/")
 (require 'beancount)
 (add-to-list 'auto-mode-alist '("\\.beancount\\'" . beancount-mode))
@@ -210,7 +229,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(lsp-ui lsp-mode go-mode valign cnfonts org-table-auto-align-mode org-table-mode org-table org-roam magit exec-path-from-shell which-key gruvbox-theme)))
+   '(yasnippet-snippets lsp-ui lsp-mode go-mode valign cnfonts org-table-auto-align-mode org-table-mode org-table org-roam magit exec-path-from-shell which-key gruvbox-theme)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

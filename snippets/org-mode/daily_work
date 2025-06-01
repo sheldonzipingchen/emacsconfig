@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: 更新每天固定的待办事项
+# key: !dw
+# --
+
+`(format-time-string "%Y年%m月%d日")` [%]
+- [ ] 导入 `(format-time-string "%Y年%m月%d日" (time-subtract (current-time) (days-to-time 1)))` 旺店通订单
+- [ ] 计算 `(format-time-string "%Y年%m月%d日" (time-subtract (current-time) (days-to-time 1)))` 旺店通订单
+- [ ] 导入 `(format-time-string "%Y年%m月%d日" (time-subtract (current-time) (days-to-time 1)))` 淘客订单
+- [ ] 导入 `(format-time-string "%Y年%m月%d日" (time-subtract (current-time) (days-to-time 1)))` 微博订单
