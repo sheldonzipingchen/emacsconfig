@@ -7,6 +7,11 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
+(when (fboundp 'set-charset-priority)
+  (set-charset-priority 'unicode))
+(prefer-coding-system 'utf-8-unix)
+(setq locale-coding-system 'utf-8-unix)
+
 (setq mac-option-modifier 'meta
       mac-command-modifier 'super)
 
@@ -43,15 +48,8 @@
   (package-install 'use-package))
 
 ;; 启用 use-package
-(eval-when-compile
-  (require 'use-package))
-
-(unless (package-installed-p 'use-package)
-  ;; 更新本地缓存
-  (package-refresh-contents)
-  ;; 之后安装它，use-package 应该是你配置中唯一一个需要这样安装的包
-  (package-install 'use-package))
-
+(require 'use-package)
+(setq use-package-always-ensure t)
 
 ;; 设置字体和主题
 (set-frame-font "FiraCode Nerd Font Propo 16" nil t)
@@ -76,7 +74,9 @@
 
 ;; exec-path-from-shell
 (use-package exec-path-from-shell
-  :ensure t)
+  :ensure t
+  :init
+  (exec-path-from-shell-initialize))
 
 
 ;; magit
@@ -148,9 +148,60 @@
   (setq org-log-repeat 'time))
 
 
+(use-package company
+  :ensure t
+  :config
+  (global-company-mode)
+  (setq company-tooltip-align-annotations t
+		company-tooltip-limit 20
+		company-show-numbers t
+		company-idle-delay .2
+		company-minimum-prefix-length 1))
+
+(use-package go-mode
+  :ensure t
+  :config
+  (setq gofmt-command "goimports")
+  (setq tab-width 4)
+  (setq indent-tabs-mode 1)
+  :hook
+  (before-save . gofmt-before-save)
+  (before-save . lsp-format-buffer)
+  (before-save . lsp-organize-imports))
+
+(use-package lsp-mode
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :hook
+  ((python-mode go-mode) . lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l"
+		lsp-auto-configure t
+		lsp-auto-guess-root t
+		lsp-idle-delay 0.500
+		lsp-session-file "~/.emacs/.cache/lsp-sessions")
+  :config
+  (setq lsp-auto-configure t))
+
+(use-package lsp-ui
+  :ensure t
+  :after lsp-mode
+  :commands (lsp-ui-mode)
+  :bind
+  (:map lsp-ui-mode-map
+		([remap xref-find-references] . lsp-ui-peek-find-references)
+		([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+		("C-c u" . lsp-ui-imenu))
+  :hook (lsp-mode . lsp-ui-mode)
+  :init
+  (setq lsp-enable-symbol-highlighting t
+		lsp-ui-doc-enable t
+		lsp-lens-enable t))
+
 (add-to-list 'load-path "~/.emacs.d/beancount-mode/")
 (require 'beancount)
 (add-to-list 'auto-mode-alist '("\\.beancount\\'" . beancount-mode))
+
 
 
 (custom-set-variables
@@ -159,7 +210,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(valign cnfonts org-table-auto-align-mode org-table-mode org-table org-roam magit exec-path-from-shell which-key gruvbox-theme)))
+   '(lsp-ui lsp-mode go-mode valign cnfonts org-table-auto-align-mode org-table-mode org-table org-roam magit exec-path-from-shell which-key gruvbox-theme)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
