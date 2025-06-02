@@ -11,7 +11,6 @@
 (require 'init-lsp)
 (require 'init-go)
 (require 'init-yaml)
-(require 'init-codeium)
 (require 'init-beancount)
 
 
