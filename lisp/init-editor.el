@@ -5,14 +5,18 @@
 
 ;; company
 (use-package company
-  :ensure 
+  :ensure t
   :config
-  (global-company-mode)
-  (setq company-tooltip-align-annotations t
-		company-tooltip-limit 20
-		company-show-numbers t
-		company-idle-delay .2
-		company-minimum-prefix-length 1))
+  (global-company-mode t)
+  (setq
+   company-tooltip-align-annotations t
+   company-tooltip-limit 20
+   company-show-numbers t
+   company-idle-delay .2
+   company-require-match nil
+   company-minimum-prefix-length 0
+
+   company-frontends '(company-preview-frontend)))
 
 
 ;; yasnippet
