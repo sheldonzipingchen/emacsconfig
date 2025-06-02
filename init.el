@@ -120,6 +120,9 @@
 	   "* %?\n%U\n" :clock-in t :clock-resume t)
 	  ))
 
+  (setq org-agenda-files '("~/projects/notes/notes.org"
+						   "~/projects/notes/diary.org"))
+
   ;; -----------------------
   ;; 界面与编辑优化
   ;; -----------------------
