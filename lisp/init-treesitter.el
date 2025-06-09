@@ -21,13 +21,4 @@
 		   (bash-mode . bash-ts-mode)))
   (add-to-list 'major-mode-remap-alist mapping))
 
-;; 启用高级功能
-(use-package ts-fold
-  :ensure t)
-
-(use-package treesit-fold
-  :ensure t)
-
-(add-hook 'treesit-mode-hook #'treesit-fold-indicators-mode)
-
 (provide 'init-treesitter)
