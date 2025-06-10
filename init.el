@@ -12,6 +12,7 @@
 (require 'init-treesitter)
 (require 'init-go)
 (require 'init-yaml)
+(require 'init-rust)
 (require 'init-beancount)
 
 
@@ -22,7 +23,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(treesit-fold ts-fold treesit-auto codeium projectile yaml-mode yasnippet-snippets lsp-ui lsp-mode go-mode valign cnfonts org-table-auto-align-mode org-table-mode org-table org-roam magit exec-path-from-shell which-key gruvbox-theme)))
+   '(cargo rust-mode treesit-fold ts-fold treesit-auto codeium projectile yaml-mode yasnippet-snippets lsp-ui lsp-mode go-mode valign cnfonts org-table-auto-align-mode org-table-mode org-table org-roam magit exec-path-from-shell which-key gruvbox-theme)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

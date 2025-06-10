@@ -29,6 +29,8 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
+(global-auto-revert-mode)
+
 ;; 自动断行
 (global-visual-line-mode 1)
 (setq-default truncate-lines nil)
